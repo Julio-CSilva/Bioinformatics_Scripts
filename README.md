@@ -3,11 +3,11 @@
 Este repositório contém uma coleção de scripts para auxiliar em diversas tarefas de bioinformática. Cada pasta contém um script específico, acompanhado de um README detalhado com informações sobre sua utilização.
 
 # 📂 Bioinfo-Scripts/
-├── 📂 [Análise Estatística de Contigs]()
+├── 📂 [Análise Estatística de Contigs](https://github.com/Julio-CSilva/Bioinformatics_Scripts/tree/main/analysis_contigs)
 
-├── 📂 [Extrator de Contigs]()
+├── 📂 [Extrator de Contigs](https://github.com/Julio-CSilva/Bioinformatics_Scripts/tree/main/extrator_genes)
 
-├── 📂 script3/
+├── 📂 [AlterNames Mitos2 Galaxy](https://github.com/Julio-CSilva/Bioinformatics_Scripts/tree/main/altername_mitos2_galaxy)
 
 
 ### Contato
