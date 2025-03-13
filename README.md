@@ -9,6 +9,7 @@ Este repositório contém uma coleção de scripts para auxiliar em diversas tar
 
 ├── 📂 [AlterNames Mitos2 Galaxy](https://github.com/Julio-CSilva/Bioinformatics_Scripts/tree/main/altername_mitos2_galaxy)
 
+├── 📂 [Checker Files .bed](https://github.com/Julio-CSilva/Bioinformatics_Scripts/tree/main/checker_BEDfile)
 
 ### Contato
 Caso tenha dúvidas ou sugestões, sinta-se à vontade para abrir uma issue ou entrar em contato.
