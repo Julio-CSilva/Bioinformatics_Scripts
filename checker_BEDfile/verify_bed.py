@@ -77,14 +77,16 @@ def check_genes_in_bed(directory_bedFiles):
 def addicion_dloop(file_bed):
     last_position = 0
     last_value = ""
+    name_file = file_bed.split(".")[0]
     with open(directory_bedFiles+"/"+file_bed, 'r') as f:
         for line in f:
             columns = line.strip().split('\t')
             last_position = int(columns[2])
             last_value = columns[4]
     
+
     with open(directory_bedFiles+"/"+file_bed, 'a') as f:
-        f.write(f"{file_bed}\t{last_position+1}\t{18892}\tDloop\t{last_value}\t{"+"}\n")
+        f.write(f"{name_file}\t{last_position+1}\t{18892}\tDloop\t{last_value}\t{"+"}\n")
 
 def main():
     if not os.path.isdir(directory_bedFiles):
