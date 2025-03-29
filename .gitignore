@@ -1,0 +1,7 @@
+# Ignore files in the merged_and_split_tr directory
+merged_and_split_tr/files_tr/*
+merged_and_split_tr/merged/*
+merged_and_split_tr/separated/*
+# Ignore files in the mv_file directory
+mv_file/files/*
+mv_file/results/*

@@ -18,7 +18,7 @@ Cichlasoma_bimaculatum
 Cichlasoma_amazonarum
 ----
 Chaetobranchus_flavescens
-Chaetobranchus_orbicularis
+Chaetobranchopsis_orbicularis
 Astronotus_ocellatus
 Cichla_monoculus
 Cichla_temensis
@@ -26,13 +26,13 @@ Gymnogeophagus_labiatus
 ----
 Gymnogeophagus_rhabdotus
 Geophagus_dicrozoster
-Crenicichla_notophthalmus
+Crenicichla_notophtthalmus
 Crenicichla_lugubris
 Crenicichla_macrophthalma
 Crenicichla_lenticulata
 ----
 Crenicichla_marmorata
-Apistogramma_sp
+Apistogramma_sp_Cuieiras
 Satanoperca_jurupari
 Satanoperca_lilith
 Acarichthys_heckelii

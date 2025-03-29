@@ -1,16 +1,17 @@
 import os
 import shutil
+from pathlib import Path
 
 
-diretorio_origem = "files" # Diretório dos arquivos
-lista_espécies = "sort.txt" # Lista de nomes
+dir_origem = "mv_file/files" # Diretório dos arquivos
+list_species = "mv_file/sort.txt" # Lista de nomes
 
-def criar_pastas_e_mover_arquivos(diretorio_origem, lista_espécies):
+def criar_pastas_e_mover_arquivos(diretorio_origem, list_species):
     # Ler o arquivo lista.txt e processar as espécies
     grupos = []
     grupo_atual = []
 
-    with open(lista_espécies, 'r') as file:
+    with open(list_species, 'r') as file:
         for linha in file:
             linha = linha.strip()
             if linha == "----":
@@ -25,7 +26,7 @@ def criar_pastas_e_mover_arquivos(diretorio_origem, lista_espécies):
     # Agora criar as pastas e mover os arquivos
     for i, grupo in enumerate(grupos):
         nome_pasta = f'results/div_{i+1}'  # Nome da pasta do grupo (pode ser modificado conforme necessário)
-        caminho_pasta = os.path.join(diretorio_origem, nome_pasta)
+        caminho_pasta = os.path.join("mv_file/", nome_pasta)
         os.makedirs(caminho_pasta, exist_ok=True)  # Cria a pasta se não existir
 
         for especie in grupo:
@@ -38,5 +39,7 @@ def criar_pastas_e_mover_arquivos(diretorio_origem, lista_espécies):
                     arquivo_destino = os.path.join(caminho_pasta, arquivo)
                     shutil.move(arquivo_origem, arquivo_destino)  # Move o arquivo
 
+dir_origem = Path(dir_origem).absolute()
+list_species = Path(list_species).absolute()
 # Chama a função para mover os arquivos
-criar_pastas_e_mover_arquivos(diretorio_origem, lista_espécies)
+criar_pastas_e_mover_arquivos(dir_origem, list_species)
