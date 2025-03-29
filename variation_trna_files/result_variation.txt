@@ -1,0 +1,4 @@
+[ERR10768195 - Arapaima gigas] x [ERR2143719 - Arapaima gigas]	{'tRNA Phe.png', 'tRNA Met.png', 'tRNA Trp.png', 'tRNA Glu.png', 'tRNA Tyr.png', 'tRNA Leu - TAA.png', 'tRNA Val.png'}
+[ERR10768195 - Arapaima gigas] x [ERR2143721 - Arapaima gigas]	{'tRNA Phe.png', 'tRNA Met.png', 'tRNA Glu.png', 'tRNA Tyr.png', 'tRNA Val.png'}
+[ERR2143719 - Arapaima gigas] x [ERR2143721 - Arapaima gigas]	{'tRNA Leu - TAA.png', 'tRNA Trp.png'}
+[ERR2143721 - Arapaima gigas] x [ERR2143719 - Arapaima gigas]	{'tRNA Leu - TAA.png', 'tRNA Trp.png'}

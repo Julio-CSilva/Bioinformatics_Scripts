@@ -5,3 +5,5 @@ merged_and_split_tr/separated/*
 # Ignore files in the mv_file directory
 mv_file/files/*
 mv_file/results/*
+# Ignore files in the variation_trna_files
+variation_trna_files/trna_files/*
