@@ -15,7 +15,11 @@ Este repositório contém uma coleção de scripts para auxiliar em diversas tar
 
 ├── 📂 [Split/Merge from Tandem Repeats Files](https://github.com/Julio-CSilva/Bioinformatics_Scripts/tree/main/merged_and_split_tr)
 
+├── 📂 [fasta file processing](https://github.com/Julio-CSilva/Bioinformatics_Scripts/tree/main/processing_fa)
+
 ├── 📂 [Variation between TRna Species](https://github.com/Julio-CSilva/Bioinformatics_Scripts/tree/main/variation_trna_files)
+
+├── 📂 [Análise de Similaridade Local (BLAST)](https://github.com/Julio-CSilva/Bioinformatics_Scripts/tree/main/comparisionFasta_with_blastLocal)
 
 ### Contato
 Caso tenha dúvidas ou sugestões, sinta-se à vontade para abrir uma issue ou entrar em contato.

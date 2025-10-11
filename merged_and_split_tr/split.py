@@ -1,8 +1,8 @@
 import os
 import re
 
-input_directory = "merged_and_split_tr/files_tr"
-output_directory = "merged_and_split_tr/separated"
+input_directory = "files_tr"
+output_directory = "separated"
 
 def split_txt_files(input_dir, output_dir):
     if not os.path.exists(output_dir):
