@@ -1,5 +1,7 @@
 # Bioinformatics Scripts
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20634469.svg)](https://doi.org/10.5281/zenodo.20634469)
+
 Coleção de scripts utilitários para tarefas de bioinformática — manipulação de
 arquivos FASTA, montagens de genomas mitocondriais, anotações `.bed`, BLAST
 local e organização de arquivos. Cada pasta é uma ferramenta independente e
