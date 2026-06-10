@@ -1,48 +1,68 @@
 # Análise Estatística de Contigs
 
-O script `analysis_contig.py` realiza a análise Estatísticas de arquivos `.fasta`/`.fa`, coletando informações como:
-- **%AT**: Porcentagem de Adenina (A) e Timina (T) na sequência.
-- **%CG**: Porcentagem de Citosina (C) e Guanina (G) na sequência.
-- **AT Skew**: Métrica que avalia o viés entre Adenina e Timina.
+O script `analysis_contig.py` realiza a análise estatística de arquivos
+`.fasta`/`.fa`, calculando, **para cada contig**, a composição de nucleotídeos:
 
-Os resultados são armazenados em um arquivo `.csv`.
+- **%AT**: porcentagem de Adenina (A) e Timina (T).
+- **%GC**: porcentagem de Guanina (G) e Citosina (C).
+- **AT Skew**: viés entre Adenina e Timina — `(A − T) / (A + T)`.
+- **GC Skew**: viés entre Guanina e Citosina — `(G − C) / (G + C)`.
+
+Os resultados são gravados em um arquivo `.csv`.
 
 ## Requisitos
 
-Para executar o script, é necessário ter o Python instalado e garantir que os arquivos `.fasta` ou `.fa` estejam disponíveis no diretório correto.
+- Python 3
+- [`python-dotenv`](https://pypi.org/project/python-dotenv/) — instale com
+  `pip install -r ../requirements.txt`
+- Um arquivo `.env` com as variáveis de ambiente descritas abaixo.
+
+### Configuração (`.env`)
+
+O script carrega as configurações de `../../samples/.env` (dois níveis acima do
+script). Veja o modelo em [`.env.example`](../.env.example) na raiz do
+repositório. Variáveis utilizadas:
+
+| Variável                | Descrição                                                                 |
+|-------------------------|---------------------------------------------------------------------------|
+| `NOVOPLASTY_FASTA_PATH` | Diretório de entrada com os arquivos `.fa`/`.fasta`                        |
+| `PATH_RESULTS`          | Diretório base de saída; o CSV é salvo em `Table/Novoplasty_analysis_contigs.csv` |
 
 ## Como Usar
 
-1. **Defina o diretório dos arquivos FASTA**:
-   ```python
-   directory = "dir_files"
-   ```
-2. **Defina o nome do arquivo de saída**:
-   ```python
-   output_file = "analysis_contigs.csv"
-   ```
-3. **Execute o script**:
-   ```sh
-   python3 analysis_contig.py
-   ```
+O script não recebe argumentos de linha de comando; a configuração vem do `.env`.
+
+```sh
+python3 analysis_contig.py
+```
 
 ## Estrutura do Arquivo de Saída
 
-O script gera um arquivo `.csv` com as seguintes colunas:
+O CSV gerado tem as seguintes colunas:
 
-| File | Contigs | Amount | %AT | %CG | AT Skew |
-|------|--------|--------|-----|-----|---------|
-| Nome do arquivo | Identificação do contig | Quantidade de caracteres | Porcentagem de AT | Porcentagem de CG | Índice AT Skew |
+| Coluna     | Descrição                                                  |
+|------------|------------------------------------------------------------|
+| `File`     | Nome do arquivo FASTA                                      |
+| `Contigs`  | Nome da espécie, extraído do nome do arquivo (após o `_`)  |
+| `Amount`   | Número de bases da contig                                  |
+| `%AT`      | Porcentagem de A + T                                       |
+| `AT Skew`  | Índice AT Skew                                             |
+| `%GC`      | Porcentagem de G + C                                       |
+| `GC Skew`  | Índice GC Skew                                             |
 
 ## Exemplo de Saída
 
 ```csv
-File,Contigs,Amount,%AT,%CG,AT Skew
-sample.fasta,>contig_1,1500,55.60,44.40,0.10
-sample.fasta,>contig_2,2300,48.75,51.25,-0.05
-sample2.fasta,>contig_1,2000,40.30,48.2,-0.02
+File,Contigs,Amount,%AT,AT Skew,%GC,GC Skew
+ERR123_EspecieAlpha.fa,EspecieAlpha,16542,55.60,0.10,44.40,-0.03
+ERR456_EspecieBeta.fa,EspecieBeta,16780,53.20,0.08,46.80,-0.01
 ```
 
-## Autor
-Este script foi desenvolvido para análise de contigs em arquivos FASTA no contexto de bioinformática.
+## Observações
 
+- O arquivo de saída é sobrescrito a cada execução.
+- A subpasta `Table/` precisa existir dentro de `PATH_RESULTS`.
+
+## Autor
+
+Julio-CSilva

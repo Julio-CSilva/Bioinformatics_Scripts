@@ -29,10 +29,11 @@ O script executa as seguintes etapas:
 
 ## Execução
 
-Certifique-se de que o Python está instalado e execute o script com:
+Os caminhos no script são relativos à **raiz do repositório**. Execute a partir
+dela:
 
 ```bash
-python3 main.py
+python3 variation_trna_files/main.py
 ```
 
 ## Dependências
@@ -51,7 +52,13 @@ O script gerará um arquivo `variation_trna_files/result_variation.txt` contendo
 
 Isso indica que os arquivos listados estão presentes em uma subpasta, mas não na outra.
 
----
+## Observações
 
-Este script é útil para análise de variações em arquivos entre grupos de uma mesma espécie em um conjunto de dados de tRNA.
+- O script **adiciona** (append) linhas ao `result_variation.txt` a cada
+  execução. Apague o arquivo entre execuções para evitar resultados acumulados.
+- A pasta `trna_files/` não é versionada (ver `.gitignore`).
+
+## Autor
+
+Julio-CSilva
 

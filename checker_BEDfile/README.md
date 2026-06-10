@@ -1,6 +1,6 @@
 # Verificação e Modificação de Arquivos .BED
 
-O script `verify_bed_files.py` verifica arquivos `.bed`, ajusta Dloop e verifica Genes, TRNA e RRNA. `.bed` que estiverem completos são movidos para um diretório verificado.
+O script `verify_bed.py` verifica arquivos `.bed`, ajusta o Dloop e confere a presença dos genes, tRNAs e rRNAs esperados. Os arquivos `.bed` completos são movidos para um diretório de verificados.
 
 ## Como Funciona
 
@@ -14,13 +14,16 @@ O script `verify_bed_files.py` verifica arquivos `.bed`, ajusta Dloop e verifica
 
 ## Requisitos
 
-- Python instalado
+- Python **3.12+** (o script usa f-strings com aspas aninhadas)
 - Diretório `beds/` contendo os arquivos `.bed` a serem verificados
 
 ## Como Usar
 
-1. **Defina os diretórios e execute o script**:
+1. Coloque os arquivos `.bed` na pasta `beds/` e execute o script a partir de
+   dentro da pasta `checker_BEDfile/` (os caminhos `beds/` e `verified/` são
+   relativos ao diretório de trabalho):
    ```sh
+   cd checker_BEDfile
    python3 verify_bed.py
    ```
 
@@ -56,5 +59,6 @@ Arquivo: sample2.bed - Genes splitados: nad4
 - Genes splitados (ex.: `gene_0`) serão reconhecidos.
 
 ## Autor
-Este script foi criado para facilitar a curadoria e validação de arquivos `.bed` em bioinformática.
+
+Julio-CSilva
 

@@ -1,146 +1,138 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-"""
-Script para comparar pares de arquivos FASTA de dois diretórios.
-
-Este script percorre os arquivos no primeiro diretório, encontra os arquivos
-de mesmo nome no segundo diretório e compara as sequências contidas neles.
-
-Primeiro, ele faz uma verificação de identidade exata. Se as sequências não
-forem idênticas, ele executa um alinhamento local usando blastn para calcular
-a porcentagem de identidade e a cobertura.
-"""
-
 import os
-import shutil
+import csv
+import re
+import subprocess
 import argparse
-import io
-from Bio.SeqIO import read as SeqIO_read
-from Bio.Blast.Applications import NcbiblastnCommandline
-from Bio.Blast import NCBIXML
 
-def comparar_sequencias(arquivo_query, arquivo_subject):
-    """
-    Compara duas sequências de arquivos FASTA.
-
-    Args:
-        arquivo_query (str): Caminho para o arquivo FASTA da query.
-        arquivo_subject (str): Caminho para o arquivo FASTA do subject (alvo).
-
-    Returns:
-        dict: Um dicionário contendo os resultados da comparação.
-    """
+def calcular_comprimento_fasta(caminho_arquivo):
+    """Calcula o comprimento total das sequências dentro de um arquivo FASTA."""
+    total_len = 0
     try:
-        # 1. Tenta ler as sequências dos arquivos
-        seq_query = SeqIO_read(arquivo_query, "fasta")
-        seq_subject = SeqIO_read(arquivo_subject, "fasta")
-
-        # 2. Se não forem idênticas, executa o BLAST
-        # O comando será: blastn -query <arquivo_query> -subject <arquivo_subject> -outfmt 5
-        blastn_cline = NcbiblastnCommandline(
-            query=arquivo_query,
-            subject=arquivo_subject,
-            outfmt=5  # Formato de saída XML
-        )
-
-        stdout, stderr = blastn_cline()
-
-        # 3. Analisa o resultado XML do BLAST
-        blast_record = NCBIXML.read(io.StringIO(stdout))
-
-        # Se não houver alinhamentos, não há similaridade significativa
-        if not blast_record.alignments:
-            return {
-                "status": "sem alinhamento BLAST",
-                "identidade": 0.0,
-                "cobertura": 0.0
-            }
-
-        # Pega o primeiro e melhor alinhamento (High-Scoring Pair - HSP)
-        hsp = blast_record.alignments[0].hsps[0]
-
-        # Calcula a porcentagem de identidade e cobertura
-        identidade = (hsp.identities / hsp.align_length) * 100
-        cobertura_query = (hsp.align_length / len(seq_query.seq)) * 100
-
-        return {
-            "status": "Match BLAST",
-            "identidade": identidade,
-            "cobertura": cobertura_query,
-            "e_value": hsp.expect,
-            "tamanho_query": len(seq_query.seq),
-            "tamanho_subject": len(seq_subject.seq)
-        }
-
-    except FileNotFoundError:
-        return {"status": "ERRO", "mensagem": f"Arquivo não encontrado: {arquivo_query} ou {arquivo_subject}"}
-    except ValueError as e:
-        # Erro comum se o arquivo FASTA estiver vazio ou mal formatado
-        return {"status": "ERRO", "mensagem": f"Erro ao ler o FASTA: {e}"}
+        with open(caminho_arquivo, 'r') as f:
+            for line in f:
+                if not line.startswith('>'):
+                    total_len += len(line.strip())
     except Exception as e:
-        # Captura outros erros, como o BLAST+ não estar instalado
-        return {"status": "ERRO", "mensagem": f"Ocorreu um erro inesperado: {e}"}
+        print(f"Erro ao ler {caminho_arquivo}: {e}")
+    return total_len
+
+def extrair_sra_e_especie(nome_arquivo):
+    """Extrai o SRA e o nome da espécie a partir do nome do arquivo (SRA_nome_da_especie.fasta)."""
+    # Remove a extensão
+    nome_base = os.path.splitext(nome_arquivo)[0]
+    if nome_base.endswith('.fa'): # Trata caso splitext não tire tudo se houver pontos duplos
+        nome_base = nome_base[:-3]
+        
+    # Separa pelo primeiro underline para isolar o SRA
+    partes = nome_base.split('_', 1)
+    if len(partes) == 2:
+        return partes[0], partes[1]
+    return None, None
+
+def encontrar_arquivo_correspondente(diretorio, sra, especie):
+    """Procura um arquivo no diretório que comece com SRA_especie e tenha extensão fa ou fasta."""
+    prefixo = f"{sra}_{especie}"
+    for arquivo in os.listdir(diretorio):
+        if arquivo.startswith(prefixo):
+            if arquivo.endswith(('.fa', '.fasta')):
+                return os.path.join(diretorio, arquivo)
+    return None
+
+def executar_blastn(query_path, subject_path):
+    """Executa o blastn local entre dois arquivos utilizando a opção -subject."""
+    # Formato 6 customizado: pident (identidade), evalue, qcovs (cobertura da query), length (tamanho do alinhamento)
+    comando = [
+        "blastn",
+        "-query", query_path,
+        "-subject", subject_path,
+        "-outfmt", "6 pident evalue qcovs length"
+    ]
+    
+    try:
+        resultado = subprocess.run(comando, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        print(resultado)
+        linhas = resultado.stdout.strip().split('\n')
+        
+        if linhas and linhas[0]:
+            # Pega o melhor hit (primeira linha)
+            valores = linhas[0].split('\t')
+            return {
+                "pident": valores[0],
+                "evalue": valores[1],
+                "qcovs": valores[2],
+                "length": valores[3]
+            }
+    except subprocess.CalledProcessError as e:
+        print(f"Erro ao executar o BLAST entre {query_path} e {subject_path}: {e.stderr}")
+    except Exception as e:
+        print(f"Erro inesperado no BLAST: {e}")
+        
+    return {"pident": "N/A", "evalue": "N/A", "qcovs": "N/A", "length": "N/A"}
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Compara arquivos FASTA de mesmo nome em dois diretórios usando BLAST."
-    )
-    parser.add_argument("dir1", help="O primeiro diretório (contém as queries).")
-    parser.add_argument("dir2", help="O segundo diretório (contém os subjects/alvos).")
-
+    parser = argparse.ArgumentParser(description="Compara montagens do NOVOPlasty e Unicycler via BLASTn.")
+    parser.add_argument("-n", "--novoplasty", required=True, help="Diretório das montagens do NOVOPlasty")
+    parser.add_argument("-u", "--unicycler", required=True, help="Diretório das montagens do Unicycler")
+    parser.add_argument("-o", "--output", default="resultado_blast_montagens.csv", help="Nome do arquivo CSV de saída")
+    
     args = parser.parse_args()
-
-    if not os.path.isdir(args.dir1):
-        print(f"Erro: O diretório '{args.dir1}' não existe.")
-        return
-    if not os.path.isdir(args.dir2):
-        print(f"Erro: O diretório '{args.dir2}' não existe.")
+    
+    if not os.path.isdir(args.novoplasty) or not os.path.isdir(args.unicycler):
+        print("Erro: Certifique-se de que ambos os caminhos fornecidos são diretórios válidos.")
         return
 
-    # Lista arquivos no primeiro diretório
-    arquivos_dir1 = [f for f in os.listdir(args.dir1) if os.path.isfile(os.path.join(args.dir1, f))]
+    dados_finais = []
+    arquivos_novoplasty = [f for f in os.listdir(args.novoplasty) if f.endswith(('.fa', '.fasta'))]
+    
+    print(f"Encontrados {len(arquivos_novoplasty)} arquivos FASTA no diretório NOVOPlasty.")
+    print("Iniciando as comparações...")
 
-    if not arquivos_dir1:
-        print(f"Nenhum arquivo encontrado no diretório '{args.dir1}'.")
-        return
-
-    print("-" * 60)
-    print(f"Comparando arquivos de '{args.dir1}' com '{args.dir2}'")
-    print("-" * 60)
-
-    for nome_arquivo in sorted(arquivos_dir1):
-        caminho_query = os.path.join(args.dir1, nome_arquivo)
-        caminho_subject = os.path.join(args.dir2, nome_arquivo)
-
-        print(f"\nComparando: {nome_arquivo}")
-
-        if not os.path.exists(caminho_subject):
-            print(f"  -> AVISO: Arquivo correspondente não encontrado em '{args.dir2}'. Pulando.")
+    for arq_novo in arquivos_novoplasty:
+        sra, especie = extrair_sra_e_especie(arq_novo)
+        if not sra or not especie:
+            print(f"Aviso: Não foi possível extrair SRA/Espécie do arquivo {arq_novo}. Pulando...")
             continue
+            
+        caminho_novo = os.path.join(args.novoplasty, arq_novo)
+        caminho_uni = encontrar_arquivo_correspondente(args.unicycler, sra, especie)
+        
+        if not caminho_uni:
+            print(f"Aviso: Correspondente para {sra}_{especie} não foi encontrado no diretório Unicycler. Pulando...")
+            continue
+            
+        # Calcula comprimentos das sequências
+        len_novo = calcular_comprimento_fasta(caminho_novo)
+        len_uni = calcular_comprimento_fasta(caminho_uni)
+        
+        # Executa BLAST
+        print(f"Rodando BLASTn para: {sra} - {especie}...")
+        blast_res = executar_blastn(query_path=caminho_novo, subject_path=caminho_uni)
+        
+        # Cobertura calculada (Alinhamento / Tamanho Query) como alternativa/complemento
+        # Se qcovs já faz isso, podemos usar o valor do qcovs diretamente para a coluna 'cobertura'
+        cobertura = blast_res["qcovs"]
+        
+        dados_finais.append({
+            "sra": sra,
+            "specie": especie,
+            "len_novo": len_novo,
+            "len_uni": len_uni,
+            "pident": f"{float(blast_res["pident"]):.1f}%",
+            "qcovs": blast_res["qcovs"] + "%",
+            "evalue": blast_res["evalue"]
+        })
 
-        resultado = comparar_sequencias(caminho_query, caminho_subject)
-
-        if resultado["status"] == "ERRO":
-            print(f"  -> ERRO: {resultado['mensagem']}")
-        elif resultado["identidade"] >= 99.9:
-            print(f"  -> Status: {resultado['status']}")
-            if "identidade" in resultado:
-                print(f"     Similaridade (BLAST): {resultado['identidade']:.2f}%")
-                print(f"     Cobertura da Query:   {resultado['cobertura']:.2f}%")
-                print(f"     E-value:              {resultado['e_value']:.2e}")
-            #shutil.move(caminho_subject, os.path.join(os.path.dirname(__file__), "similar/fastaCircularized"))
-            #shutil.move(caminho_query, os.path.join(os.path.dirname(__file__), "similar/fasta"))
-        else:
-            print(f"  -> Status: {resultado['status']}")
-            if "identidade" in resultado:
-                print(f"     Similaridade (BLAST): {resultado['identidade']:.2f}%")
-                print(f"     Cobertura da Query:   {resultado['cobertura']:.2f}%")
-                print(f"     E-value:              {resultado['e_value']:.2e}")
-
-    print("\n" + "-" * 60)
-    print("Comparação concluída.")
-    print("-" * 60)
+    # Grava o arquivo CSV
+    colunas = ["sra", "specie", "len_novo", "len_uni", "pident", "qcovs", "evalue"]
+    try:
+        with open(args.output, 'w', newline='', encoding='utf-8') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=colunas)
+            writer.writeheader()
+            writer.writerows(dados_finais)
+        print(f"\nProcesso concluído com sucesso! Resultado salvo em: {args.output}")
+    except Exception as e:
+        print(f"Erro ao salvar o arquivo CSV: {e}")
 
 if __name__ == "__main__":
     main()

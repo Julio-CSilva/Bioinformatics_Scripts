@@ -1,16 +1,65 @@
-# Ignore files in the merged_and_split_tr directory
+# =============================================================
+#  Ambientes e caches Python
+# =============================================================
+**/.venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# =============================================================
+#  Segredos / variáveis de ambiente
+#  (o .env real fica fora do repositório; nunca versione-o.
+#   Apenas o template .env.example deve ser publicado.)
+# =============================================================
+.env
+*.env
+!.env.example
+
+# =============================================================
+#  Saídas e logs do Unicycler
+#  (contêm caminhos/usuário internos do servidor — não publicar)
+# =============================================================
+Unicycler_files_treatment/Unicycler/
+**/*.shell_log.txt
+**/unicycler.log
+
+# =============================================================
+#  Pastas de dados (entrada/saída) — fornecidas pelo usuário
+# =============================================================
 merged_and_split_tr/files_tr/*
 merged_and_split_tr/merged/*
 merged_and_split_tr/separated/*
-# Ignore files in the mv_file directory
+merged_and_split_tr/separeted/*
 mv_file/files/*
 mv_file/results/*
-# Ignore files in the variation_trna_files
 variation_trna_files/trna_files/*
-
-# Ignore files fasta
 processing_fa/fasta/*
 comparisionFasta_with_blastLocal/fasta_files/*
+altername_mitos2_galaxy/files/*
+altername_mitos2_galaxy/Arquivos/*
+checker_BEDfile/beds/*
+checker_BEDfile/verified/*
+extrator_genes/fastas/*
+extrator_genes/results/*
 
-# Ignore tmp files
+# =============================================================
+#  Arquivos temporários
+# =============================================================
 *.tmp
+**/.tmp/
+
+# =============================================================
+#  Dados pesados de bioinformática (rede de segurança)
+#  Não devem ir para o GitHub; são fornecidos localmente.
+# =============================================================
+*.fasta
+*.fa
+*.fastq
+*.fq
+*.gfa
+*.bam
+*.sam
+*.vcf
+*.gz
+*.sra

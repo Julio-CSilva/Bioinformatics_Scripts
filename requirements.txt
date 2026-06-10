@@ -1,0 +1,17 @@
+# Dependências Python das ferramentas deste repositório.
+# Instale com:  pip install -r requirements.txt
+#
+# A maioria dos scripts usa apenas a biblioteca padrão do Python 3.
+# A única dependência de terceiros é o python-dotenv, usado por:
+#   - analysis_contigs/analysis_contig.py
+#   - count_bases/main.py
+python-dotenv>=1.0.0
+
+# ------------------------------------------------------------------
+# Dependência EXTERNA (não instalável via pip):
+# A ferramenta "comparisionFasta_with_blastLocal" requer o pacote
+# BLAST+ do NCBI instalado no sistema, com os comandos `blastn` e
+# `makeblastdb` disponíveis no PATH.
+#   - Debian/Ubuntu:  sudo apt install ncbi-blast+
+#   - Conda:          conda install -c bioconda blast
+# ------------------------------------------------------------------

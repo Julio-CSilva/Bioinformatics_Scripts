@@ -4,13 +4,17 @@ O script `ext_gen.py` extrai genes específicos de arquivos `.fasta`/`.fa` e sal
 
 ## Requisitos
 
-Para executar o script, é necessário ter o Python instalado e garantir que os arquivos `.fasta` ou `.fa` estejam disponíveis no diretório correto.
+- Python 3 (utiliza apenas a biblioteca padrão: `os`)
+- Arquivos `.fasta`/`.fa` no diretório de entrada.
 
 ## Como Usar
 
+As configurações ficam no início do script. Por padrão os caminhos são
+relativos à **raiz do repositório**, então execute o script a partir dela.
+
 1. **Defina o diretório dos arquivos FASTA**:
    ```python
-   dir_fasta = "fastas"
+   dir_fasta = "extrator_genes/fastas"
    ```
 2. **Defina o(s) Contig(s) que será(ão) extraído(s)**:
    ```python
@@ -20,12 +24,12 @@ Para executar o script, é necessário ter o Python instalado e garantir que os 
 
 3. **Defina o diretório onde os arquivos extraídos serão salvos**:
    ```python
-   dir_resultados = "results"
+   dir_resultados = "extrator_genes/results"
    ```
 
-4. **Execute o script**:
+4. **Execute o script** (a partir da raiz do repositório):
    ```sh
-   python3 ext_gen.py
+   python3 extrator_genes/ext_gen.py
    ```
 
 ## Estrutura do Arquivo de Saída
@@ -60,5 +64,6 @@ results/sequencias_COXIII.fasta
 ```
 
 ## Autor
-Este script foi desenvolvido para facilitar a extração de genes em análises bioinformáticas.
+
+Julio-CSilva
 
